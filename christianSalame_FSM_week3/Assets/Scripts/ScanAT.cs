@@ -10,6 +10,8 @@ namespace NodeCanvas.Tasks.Actions {
 		public BBParameter<float> detectionRadius;
 		public LayerMask lightTowerLayerMask;
 
+		public BBParameter<Transform> targetTransform;
+
 		//Use for initialization. This is called only once in the lifetime of the task.
 		//Return null if init was successfull. Return an error string otherwise
 		protected override string OnInit() {
@@ -37,9 +39,14 @@ namespace NodeCanvas.Tasks.Actions {
                     return;
                 }
 
+
+				//Only requires "" searching GetVariableValue and GetComponent becasue its another objects blackboard.
                 float repairValue = lightTowerBlackboard.GetVariableValue<float>("repairValue");
                 if (repairValue == 0)
                 {
+                    targetTransform.value = lightTowerBlackboard.GetVariableValue<Transform>("workpad");
+
+
                     EndAction(true);
                 }
 

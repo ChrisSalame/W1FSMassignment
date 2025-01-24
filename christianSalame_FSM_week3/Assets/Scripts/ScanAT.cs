@@ -7,7 +7,7 @@ namespace NodeCanvas.Tasks.Actions {
 	public class ScanAT : ActionTask {
 		public Color scanColour;
 		public int numberOfScanCirclePoints;
-		public float detectionRadius;
+		public BBParameter<float> detectionRadius;
 		public LayerMask lightTowerLayerMask;
 
 		//Use for initialization. This is called only once in the lifetime of the task.
@@ -24,21 +24,30 @@ namespace NodeCanvas.Tasks.Actions {
 
 		//Called once per frame while the action is active.
 		protected override void OnUpdate() {
+            DrawCircle(agent.transform.position, detectionRadius.value, scanColour, numberOfScanCirclePoints);
 
-			DrawCircle(agent.transform.position, detectionRadius, scanColour, numberOfScanCirclePoints);
-
-
-			Collider[] detectedColliders = Physics.OverlapSphere(agent.transform.position, detectionRadius, lightTowerLayerMask);
+            Collider[] detectedColliders = Physics.OverlapSphere(agent.transform.position, detectionRadius.value, lightTowerLayerMask);
             foreach (Collider detectedCollider in detectedColliders)
             {
-				Blackboard lightTowerBlackboard = detectedCollider.GetComponent<Blackboard>();
-				float repairValue = lightTowerBlackboard.GetVariableValue<float>("repairValue");
+                Blackboard lightTowerBlackboard = detectedCollider.GetComponentInParent<Blackboard>();
+
+                if (lightTowerBlackboard == null)
+                {
+                    Debug.Log("In ScanAT - lightTowerBlackboard was not found in detected collider.");
+                    return;
+                }
+
+                float repairValue = lightTowerBlackboard.GetVariableValue<float>("repairValue");
+                if (repairValue == 0)
+                {
+                    EndAction(true);
+                }
 
             }
 
         }
 
-		private void DrawCircle(Vector3 center, float radius, Color colour, int numberOfPoints)
+        private void DrawCircle(Vector3 center, float radius, Color colour, int numberOfPoints)
 		{
 			Vector3 startPoint, endPoint;
 			int anglePerPoint = 360 / numberOfPoints;

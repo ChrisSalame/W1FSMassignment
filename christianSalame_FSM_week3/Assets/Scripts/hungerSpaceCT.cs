@@ -31,7 +31,7 @@ namespace NodeCanvas.Tasks.Conditions {
 		//Return whether the condition is success or failure.
 		protected override bool OnCheck() {
 
-            if (Input.GetKeyDown("space") && hunger.value < 65)
+            if (Input.GetKeyDown("space") && hunger.value < 75)
             {
                 Debug.Log("this would start sub fsm");
                 return true;

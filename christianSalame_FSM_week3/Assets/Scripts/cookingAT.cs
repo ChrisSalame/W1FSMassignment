@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace NodeCanvas.Tasks.Actions {
 
-	public class manualEating : ActionTask {
+	public class cookingAT : ActionTask {
 
         public Blackboard agentBlackboard;
         public BBParameter<float> hunger;
@@ -21,13 +21,13 @@ namespace NodeCanvas.Tasks.Actions {
 		//EndAction can be called from anywhere.
 		protected override void OnExecute() {
 
-            if (hunger.value < 65)
+            if (hunger.value > 65)
             {
-                Debug.Log("character manually Ate");
-				hunger.value += 15;
+                Debug.Log("Character cooked food");
+                hunger.value -= 10;
                 EndAction(true);
             }
-		}
+        }
 
 		//Called once per frame while the action is active.
 		protected override void OnUpdate() {
